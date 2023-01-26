@@ -10,6 +10,15 @@ services:
       MYSQL_DATABASE: db
     ports:
       - 3306:3306
+  
+  mysql-test:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: db-test
+    ports:
+      - 3307:3306
 
   phpmyadmin:
     image: phpmyadmin
