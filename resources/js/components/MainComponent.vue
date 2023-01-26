@@ -19,13 +19,17 @@
                 <option v-for="category in categories" :value="category.id">{{ category.name }}</option>
             </select>
         </label>
-        <input type="file" @change="uploadFile"  required/>
-        <p v-text="error" style="color: red"></p>
-
+        <label>
+            Image:
+            <input type="file" @change="uploadFile"  required/>
+        </label>
+        <br>
+        <br>
         <button type="submit">Add Product</button>
+        <p v-text="error"></p>
         </form>
-        <br/>
-
+        <hr>
+        <br>
         <table>
             <tr>
                 <th>Name</th>
