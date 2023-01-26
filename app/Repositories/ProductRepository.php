@@ -10,9 +10,17 @@ class ProductRepository
     {
         $products = Product::query();
 
+        if (isset($data['category'])) {
+            $categoryId = $data['category'];
+            $products->whereHas('categories', function ($query) use ($categoryId) {
+                $query->where('id', $categoryId);
+            });
+        }
+
         if (isset($data['column']) && isset($data['order'])) {
             $products->orderBy($data['column'], $data['order']);
         }
+
         return $products->paginate(5);
     }
 

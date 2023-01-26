@@ -29,6 +29,13 @@
             Pages: 
             <button v-for="pageNumber in totalPages" @click="getProducts(pageNumber)">{{ pageNumber }}</button>
         </div>
+
+        <br/><br/>
+        <span>Filter by category :</span>
+        <select v-model="selectedCategoryFilter" @change="getProducts">
+            <option value="">All categories</option>
+            <option v-for="category in categories" :value="category.id">{{ category.name }}</option>
+        </select>
     </div>
 
 </template>
@@ -44,18 +51,22 @@ export default {
       sort: {
         column: 'name',
         order: 'asc'
-      }
+      },
+      selectedCategoryFilter: '',
+      categories: [],
     }
   },
   mounted() {
     this.getProducts();
+    this.getCategories();
   },
   methods: {
     async getProducts(pageNumber) {
       try {
         axios.get('/api/products?page='+pageNumber+
                                             '&column='+this.sort.column+
-                                            '&order='+this.sort.order)
+                                            '&order='+this.sort.order+
+                                            '&category='+this.selectedCategoryFilter)
                 .then(response => {
             console.log(response.data.data);
             this.products = response.data.data;
@@ -69,6 +80,15 @@ export default {
         this.sort.column = column;
         this.sort.order = order;
         this.getProducts();
+    },
+    getCategories() {
+        try{
+            axios.get('/api/categories').then(response => {
+                this.categories = response.data;
+            });
+        } catch (error) {
+            console.log(error);
+        }
     },
   }
   
