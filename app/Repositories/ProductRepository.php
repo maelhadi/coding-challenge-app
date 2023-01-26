@@ -8,7 +8,7 @@ class ProductRepository
 {
     public function all()
     {
-        return Product::all();
+        return Product::query()->paginate(5);
     }
 
     public function find($id)
