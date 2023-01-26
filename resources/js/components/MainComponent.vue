@@ -21,7 +21,7 @@
         </label>
         <label>
             Image:
-            <input type="file" @change="uploadFile"  required/>
+            <input type="file" ref="fileInput" @change="uploadFile"  required/>
         </label>
         <br>
         <br>
@@ -79,7 +79,7 @@ export default {
       products: [],
       totalPages: 1,
       sort: {
-        column: 'name',
+        column: 'id',
         order: 'asc'
       },
       selectedCategoryFilter: '',
@@ -106,7 +106,6 @@ export default {
                                             '&order='+this.sort.order+
                                             '&category='+this.selectedCategoryFilter)
                 .then(response => {
-            console.log(response.data.data);
             this.products = response.data.data;
             this.totalPages = response.data.last_page;
         });
@@ -140,6 +139,10 @@ export default {
                             image: '',
                             categories: [],
                         };
+
+            // clear file input 
+            this.$refs.fileInput.value = "";
+
             //refresh product table
             this.getProducts();
         })
@@ -154,8 +157,14 @@ export default {
       axios
         .post('/api/products/upload', formData, {headers: {'Content-Type': 'multipart/form-data'}})
         .then(response => {
-            this.error = response.data.error;
-            this.newProduct.image = response.data.url;
+            // check errors
+            if(typeof response.data.error !== "undefined"){
+                this.error = response.data.error;
+                this.$refs.fileInput.value = "";
+            }else{
+                this.newProduct.image = response.data.url;
+                this.error = "";
+            }
         })
         .catch(error => {
           console.log(error);
