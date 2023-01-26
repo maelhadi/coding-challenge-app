@@ -6,9 +6,14 @@ use App\Models\Product;
 
 class ProductRepository
 {
-    public function all()
+    public function all($data)
     {
-        return Product::query()->paginate(5);
+        $products = Product::query();
+
+        if (isset($data['column']) && isset($data['order'])) {
+            $products->orderBy($data['column'], $data['order']);
+        }
+        return $products->paginate(5);
     }
 
     public function find($id)
