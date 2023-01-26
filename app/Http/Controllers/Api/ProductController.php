@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Services\ProductService;
+use Exception;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -45,5 +46,24 @@ class ProductController extends Controller
         $this->productService->destroyProduct($id);
 
         return response(null, 204);
+    }
+
+    public function upload(Request $request)
+    {
+        try {
+            $request->validate([
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            ]);
+        } catch(Exception $e) {
+            return ['error' => $e->getMessage()];
+        }
+
+            $image = $request->file('image');
+        $name = time().'.'.$image->getClientOriginalExtension();
+        $destinationPath = public_path('/images');
+        $image->move($destinationPath, $name);
+        $url = '/images/'.$name;
+
+        return ['url' => $url];
     }
 }

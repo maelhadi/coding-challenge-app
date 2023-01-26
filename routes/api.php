@@ -21,4 +21,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::apiResource('products', ProductController::class);
+Route::post('products/upload', [ProductController::class, 'upload']);
 Route::apiResource('categories', CategoryController::class);

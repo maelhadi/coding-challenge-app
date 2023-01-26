@@ -1,5 +1,31 @@
 <template>
     <div>
+        <form @submit.prevent="addProduct">
+        <label>
+            Name:
+            <input v-model="newProduct.name" type="text" required />
+        </label>
+        <label>
+            Description:
+            <input v-model="newProduct.description" type="text" required />
+        </label>
+        <label>
+            Price:
+            <input v-model="newProduct.price" type="number" step="0.01" required />
+        </label>
+        <label>
+            Category :
+            <select multiple v-model="newProduct.categories">
+                <option v-for="category in categories" :value="category.id">{{ category.name }}</option>
+            </select>
+        </label>
+        <input type="file" @change="uploadFile"  required/>
+        <p v-text="error" style="color: red"></p>
+
+        <button type="submit">Add Product</button>
+        </form>
+        <br/>
+
         <table>
             <tr>
                 <th>Name</th>
@@ -54,6 +80,14 @@ export default {
       },
       selectedCategoryFilter: '',
       categories: [],
+      newProduct: {
+        name: "",
+        description: "",
+        price: "",
+        image: '',
+        categories: [],
+      },
+      error: '',
     }
   },
   mounted() {
@@ -89,6 +123,39 @@ export default {
         } catch (error) {
             console.log(error);
         }
+    },
+    addProduct() {
+      axios
+        .post('/api/products', this.newProduct)
+        .then(response => {
+          // clear the newProduct object
+          this.newProduct = {
+                            name: "",
+                            description: "",
+                            price: "",
+                            image: '',
+                            categories: [],
+                        };
+            //refresh product table
+            this.getProducts();
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    uploadFile(event) {
+        let formData = new FormData();
+        formData.append('image', event.target.files[0]);
+
+      axios
+        .post('/api/products/upload', formData, {headers: {'Content-Type': 'multipart/form-data'}})
+        .then(response => {
+            this.error = response.data.error;
+            this.newProduct.image = response.data.url;
+        })
+        .catch(error => {
+          console.log(error);
+        });
     },
   }
   
