@@ -19,4 +19,7 @@ npm install
 echo "Executing migrations..."
 php artisan migrate
 
+echo "Executing migrations on test database..."
+php artisan migrate --env=testing
+
 echo "Build complete!"
