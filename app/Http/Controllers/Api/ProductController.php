@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Services\FileUploadService;
 use App\Services\ProductService;
 use Exception;
 use Illuminate\Http\Request;
@@ -11,11 +12,14 @@ use Illuminate\Http\Response;
 class ProductController extends Controller
 {
     private $productService;
+    private $fileUploadService;
 
-    public function __construct(ProductService $productService)
+    public function __construct(ProductService $productService, FileUploadService $fileUploadService)
     {
         $this->productService = $productService;
+        $this->fileUploadService = $fileUploadService;
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -62,15 +66,12 @@ class ProductController extends Controller
             $request->validate([
                 'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
-        } catch(Exception $e) {
-            return ['error' => $e->getMessage()];
+        } catch (Exception $e) {
+            return response(['error' => $e->getMessage()]);
         }
 
-            $image = $request->file('image');
-        $name = time().'.'.$image->getClientOriginalExtension();
-        $destinationPath = public_path('/images');
-        $image->move($destinationPath, $name);
-        $url = '/images/'.$name;
+        $image = $request->file('image');
+        $url = $this->fileUploadService->uploadFile($image);
 
         return response(['url' => $url]);
     }
