@@ -62,9 +62,12 @@ class DeleteCategoryCommand extends Command
         }
 
         //delete category
-        $this->categoryRepository->destroy($id);
-
-        $this->info('Category successfully deleted');
-        return 0;
+        if ($this->categoryRepository->destroy($id)) {
+            $this->info('Category successfully deleted');
+            return 0;
+        } else {
+            $this->error('an error occured while deleting');
+            return 1;
+        }
     }
 }

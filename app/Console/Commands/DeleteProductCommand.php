@@ -61,9 +61,12 @@ class DeleteProductCommand extends Command
         }
 
         //delete product
-        $this->productRepository->destroy($id);
-
-        $this->info('Product successfully deleted');
-        return 0;
+        if ($this->productRepository->destroy($id)) {
+            $this->info('Product successfully deleted');
+            return 0;
+        } else {
+            $this->error('an error occured while deleting');
+            return 1;
+        }
     }
 }

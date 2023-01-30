@@ -49,9 +49,11 @@ class ProductController extends Controller
      */
     public function destroy(int $id): Response
     {
-        $this->productService->destroyProduct($id);
-
-        return response(null, 204);
+        if ($this->productService->destroyProduct($id)) {
+            return response(null, 204);
+        } else {
+            return response(['error' => 'An error occured while deleting'], 500);
+        }
     }
 
     public function upload(Request $request): Response

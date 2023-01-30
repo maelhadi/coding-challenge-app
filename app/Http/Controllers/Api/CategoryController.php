@@ -49,8 +49,10 @@ class CategoryController extends Controller
      */
     public function destroy(int $id): Response
     {
-        $this->categoryService->destroyCategory($id);
-
-        return response(null, 204);
+        if ($this->categoryService->destroyCategory($id)) {
+            return response(null, 204);
+        } else {
+            return response(['error' => 'An error occured while deleting'], 500);
+        }
     }
 }
