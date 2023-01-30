@@ -6,9 +6,16 @@ use App\Models\Product;
 
 class ProductRepository
 {
+    private $product;
+
+    public function __construct(Product $product)
+    {
+        $this->product = $product;
+    }
+
     public function all($data)
     {
-        $products = Product::query();
+        $products = $this->product->query();
 
         if (isset($data['category'])) {
             $categoryId = $data['category'];
@@ -26,7 +33,7 @@ class ProductRepository
 
     public function find($id)
     {
-        return Product::find($id);
+        return $this->product->find($id);
     }
 
     public function create($productData)
@@ -36,6 +43,6 @@ class ProductRepository
 
     public function destroy($id)
     {
-        Product::destroy($id);
+        $this->product->destroy($id);
     }
 }
