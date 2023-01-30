@@ -40,6 +40,18 @@ class ProductController extends Controller
      */
     public function store(Request $request): Response
     {
+        try {
+            $request->validate([
+                'name' => 'required',
+                'description' => 'required',
+                'price' => 'required|numeric',
+                'categories' => 'array',
+                'categories.*' => 'integer|exists:categories,id',
+            ]);
+        } catch (Exception $e) {
+            return response(['error' => $e->getMessage()]);
+        }
+
         $product = $this->productService->createProduct($request->all());
 
         return response($product);
