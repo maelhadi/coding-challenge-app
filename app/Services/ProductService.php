@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Models\Product;
 use App\Repositories\ProductRepository;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class ProductService
 {
@@ -15,12 +17,12 @@ class ProductService
         $this->categoryService = $categoryService;
     }
 
-    public function getProducts($data)
+    public function getProducts(array $data): LengthAwarePaginator
     {
         return $this->productRepository->all($data);
     }
 
-    public function createProduct($productData)
+    public function createProduct(array $productData): Product
     {
         $product = $this->productRepository->create($productData);
 
@@ -34,8 +36,8 @@ class ProductService
         return $product;
     }
 
-    public function destroyProduct($id)
+    public function destroyProduct(int $id): int
     {
-        $this->productRepository->destroy($id);
+        return $this->productRepository->destroy($id);
     }
 }

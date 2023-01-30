@@ -6,10 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Services\ProductService;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class ProductController extends Controller
 {
     private $productService;
+
     public function __construct(ProductService $productService)
     {
         $this->productService = $productService;
@@ -19,9 +21,11 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
-        return $this->productService->getProducts($request->all());
+        $products = $this->productService->getProducts($request->all());
+
+        return response($products);
     }
 
     /**
@@ -30,9 +34,11 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request): Response
     {
-        return $this->productService->createProduct($request->all());
+        $product = $this->productService->createProduct($request->all());
+
+        return response($product);
     }
 
     /**
@@ -41,14 +47,14 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(int $id): Response
     {
         $this->productService->destroyProduct($id);
 
         return response(null, 204);
     }
 
-    public function upload(Request $request)
+    public function upload(Request $request): Response
     {
         try {
             $request->validate([
@@ -64,6 +70,6 @@ class ProductController extends Controller
         $image->move($destinationPath, $name);
         $url = '/images/'.$name;
 
-        return ['url' => $url];
+        return response(['url' => $url]);
     }
 }

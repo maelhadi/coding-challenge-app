@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Services\CategoryService;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class CategoryController extends Controller
 {
@@ -20,9 +21,11 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(): Response
     {
-        return $this->categoryService->getCategories();
+        $categories = $this->categoryService->getCategories();
+
+        return response($categories);
     }
 
     /**
@@ -31,9 +34,11 @@ class CategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request): Response
     {
-        return $this->categoryService->createCategory($request->all());
+        $category = $this->categoryService->createCategory($request->all());
+
+        return response($category);
     }
 
     /**
@@ -42,7 +47,7 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(int $id): Response
     {
         $this->categoryService->destroyCategory($id);
 

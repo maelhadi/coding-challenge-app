@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Product;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class ProductRepository
 {
@@ -13,7 +14,7 @@ class ProductRepository
         $this->product = $product;
     }
 
-    public function all($data)
+    public function all(array $data): LengthAwarePaginator
     {
         $products = $this->product->query();
 
@@ -31,18 +32,18 @@ class ProductRepository
         return $products->paginate(5);
     }
 
-    public function find($id)
+    public function find(int $id): ?Product
     {
         return $this->product->find($id);
     }
 
-    public function create($productData)
+    public function create(array $productData): Product
     {
         return $this->product->create($productData);
     }
 
-    public function destroy($id)
+    public function destroy(int $id): int
     {
-        $this->product->destroy($id);
+        return $this->product->destroy($id);
     }
 }
