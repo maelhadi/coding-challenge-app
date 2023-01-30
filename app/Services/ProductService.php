@@ -7,10 +7,12 @@ use App\Repositories\ProductRepository;
 class ProductService
 {
     private $productRepository;
+    private $categoryService;
 
-    public function __construct(ProductRepository $productRepository)
+    public function __construct(ProductRepository $productRepository, CategoryService $categoryService)
     {
         $this->productRepository = $productRepository;
+        $this->categoryService = $categoryService;
     }
 
     public function getProducts($data)
@@ -20,7 +22,16 @@ class ProductService
 
     public function createProduct($productData)
     {
-        return $this->productRepository->create($productData);
+        $product = $this->productRepository->create($productData);
+
+        if (isset($productData['categories'])) {
+            foreach ($productData['categories'] as $id) {
+                $category = $this->categoryService->findCategory($id);
+                $product->categories()->attach($category);
+            }
+        }
+
+        return $product;
     }
 
     public function destroyProduct($id)

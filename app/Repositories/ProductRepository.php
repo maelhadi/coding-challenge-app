@@ -2,7 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Models\Category;
 use App\Models\Product;
 
 class ProductRepository
@@ -32,16 +31,7 @@ class ProductRepository
 
     public function create($productData)
     {
-        $product = Product::create($productData);
-
-        if (isset($productData['categories'])) {
-            foreach ($productData['categories'] as $id) {
-                $category = Category::find($id);
-                $product->categories()->attach($category);
-            }
-        }
-
-        return $product;
+        return $this->product->create($productData);
     }
 
     public function destroy($id)

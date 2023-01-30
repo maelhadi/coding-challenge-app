@@ -18,6 +18,11 @@ class CategoryService
         return $this->categoryRepository->all();
     }
 
+    public function findCategory($id)
+    {
+        return $this->categoryRepository->find($id);
+    }
+
     public function createCategory($categoryData)
     {
         return $this->categoryRepository->create($categoryData);
